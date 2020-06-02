@@ -1,0 +1,17 @@
+config global
+	option anon_swap	'0'
+	option anon_mount	'0'
+	option auto_swap	'1'
+	option auto_mount	'1'
+	option delay_root	'5'
+	option check_fs		'1'
+
+# You are forced to keep this at the mount [0]. The system will try to
+# protect this setting by inserting this entry at the very top.
+config mount
+	option enabled		'1'
+	option enabled_fsck	'1'
+	option fstype		'ubifs'
+	option options		'bulk_read,compr=zlib'
+	option target		'/overlay'
+	option device		'/dev/ubi15_0'
