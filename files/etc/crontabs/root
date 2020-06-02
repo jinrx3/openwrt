@@ -1,0 +1,10 @@
+# Restart nlbwmon every midnight
+0 0 * * *	/etc/init.d/nlbwmon restart
+# Update opkg database every midnight
+0 0 * * *	opkg update
+
+# Compact zram once in a week
+0 0 * * 0	/bin/zram compact
+
+# Reload Adblock the 1st of every month
+30 2 1 * *	/etc/init.d/adblock reload
