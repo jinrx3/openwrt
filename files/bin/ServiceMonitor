@@ -1,0 +1,184 @@
+#!/bin/bash
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+# Initialize all of the readonly variables
+readonly ARG1=${1:-shell}
+readonly ARG2=${2:-/var/run/ServiceMonitor.pid}
+readonly ARG3=${3:-9m}
+readonly ARG4=${4:-1m}
+readonly AWK_LOCK=/var/run/awk.kmsg
+readonly DROP_CACHES=/proc/sys/vm/drop_caches
+readonly KERNEL_LOG=/dev/kmsg
+readonly PROCD_PID=$(cat "$ARG2")
+readonly RCD=/etc/rc.d
+
+# Detect the requiered tools to perform the service monitoring
+RENICE_BIN=$(which renice)
+CHRT_BIN=$(which chrt)
+if [ "x$RENICE_BIN" = "x" ]; then
+  logme "No 'renice' executable found! Niceness changes will not apply."
+  RENICE_BIN=:
+fi
+if [ "x$CHRT_BIN" = "x" ]; then
+  logme "No 'chrt' executable found! Scheduling policy changes will not apply."
+  CHRT_BIN=:
+fi
+
+# Initialize all the priority, OOM and scheduling policies as readonly variables
+readonly PRIO_NAN=no
+readonly PRIO_MAX=-20
+readonly PRIO_LV1=-10
+readonly PRIO_LV2=-1
+readonly PRIO_TI0=0
+readonly PRIO_TI2=1
+readonly PRIO_TI1=10
+readonly PRIO_MIN=20
+
+readonly OOM_NAN=no
+readonly OOM_MAX=-1000
+readonly OOM_LV1=-175
+readonly OOM_TI0=0
+readonly OOM_TI1=50
+readonly OOM_MIN=1000
+
+readonly SCH_NAN=no
+readonly SCH_IDL=i
+readonly SCH_BAT=b
+readonly SCH_OTH=o
+readonly SCH_RRO=rR
+readonly SCH_RRR=r
+readonly SCH_DEA=dR
+readonly SCH_FIF=fR
+
+# Change the self niceness to the lowest possible, even before the real daemon
+# is online, so we can relinquish the CPU to the other boot processes.
+"$RENICE_BIN" -n "$PRIO_MIN" $$
+
+# Initialize all the helper functions that controll the script behaviour
+logme(){
+  logger -s -t "ServiceMonitor.$ARG1" -p 'user.notice' "$1"
+}
+monitor_kernel(){
+  awk '/Unable to .* cache entry \[[0-9a-f]*\]/{print 3}' "$KERNEL_LOG" >"$DROP_CACHES" &
+  local AWK_PID=$!
+  "$RENICE_BIN" $PRIO_MAX $AWK_PID
+  "$CHRT_BIN" -a$NEW_POL -p 9 $AWK_PID
+}
+reload(){
+  logme "Reloading on SIGHUP..."
+  kill $(jobs -p)
+  monitor_kernel
+  return 0
+}
+stop(){
+  logme "Ending this session..."
+  kill $(jobs -p)
+  exit 0
+}
+wait_sleep(){
+  local time=$1
+  sleep $time &
+  local SLEEP_PID=$!
+  wait $SLEEP_PID
+}
+check_dns(){
+  if nslookup 'www.google.com' | grep -q '**'; then :; else
+    logme 'DNS might not be working, restaring daemons...'
+    "$RCD/S*dnsmasq" restart
+    "$RCD/S*unbound" restart
+  fi
+}
+
+# Start a daemon to monitor if the kernel report cache corruption, then make it
+# drop it's caches to refresh the corrupted entry; or reboot.
+monitor_kernel
+
+# Process name | Absolute niceness | OOM Score | Policy | Priority
+declare -a PROCESSES=(
+  'ServiceMonitor'    "$PRIO_MIN" "$OOM_MAX"  "$SCH_BAT"  "0"
+  'tcpdump'           "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'avahi-daemon'      "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'collectd'          "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'dbus-daemon'       "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'hd-idle'           "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'log(d|read)'       "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'nlbwmon'           "$PRIO_MIN" "$OOM_NAN"  "$SCH_BAT"  "0"
+
+  '(s|n)mb'           "$PRIO_TI2" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'haveged'           "$PRIO_TI2" "$OOM_MAX"  "$SCH_BAT"  "0"
+  'irqbalance'        "$PRIO_TI2" "$OOM_MAX"  "$SCH_BAT"  "0"
+  'knetatop'          "$PRIO_TI2" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'wsdd2'             "$PRIO_TI2" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'crond'             "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'dnsmasq'           "$PRIO_NAN" "$OOM_LV1"  "$SCH_BAT"  "0"
+  'kcompactd[0-9]+'   "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'ksoftirqd/[0-9]+'  "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'kswapd[0-9]+'      "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'loop[0-9]+'        "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'unbound'           "$PRIO_NAN" "$OOM_LV1"  "$SCH_BAT"  "0"
+  'urngd'             "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'usb-storage'       "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+  'zswap[0-9]+'       "$PRIO_NAN" "$OOM_NAN"  "$SCH_BAT"  "0"
+
+  'minidlnad'         "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+  'openvpn'           "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+  'sshd'              "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+  'ttyd'              "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+  'uhttpd'            "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+  'usbmuxd'           "$PRIO_NAN" "$OOM_NAN"  "$SCH_NAN"  "0"
+
+  '(hostap|wpa)d'     "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  'dropbear'          "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRR"  "1"
+  'netifd'            "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  'ntpd'              "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  '(o|u)dhcp'         "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  '^procd$'           "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  'rpcd'              "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  'ubusd'             "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+  'wpa_supplicant'    "$PRIO_TI0" "$OOM_MAX"  "$SCH_RRO"  "1"
+
+  'spi[0-9]+'         "$PRIO_NAN" "$OOM_NAN"  "$SCH_RRO"  "2"
+  'ubi.*bgt'          "$PRIO_NAN" "$OOM_NAN"  "$SCH_RRO"  "2" )
+
+# Setup the traps that are issued by procd for every possible action
+trap "reload" SIGHUP
+trap "stop" SIGTERM
+
+while [ -f "$ARG2" ] && [ "0$PROCD_PID" -eq "0$$" ]; do wait_sleep $ARG4
+  check_dns
+  for ((i = 0; i < ${#PROCESSES[@]}; i = i + 5)); do
+    PROCESS_NAME=${PROCESSES[$i]}
+    NEW_NICE=${PROCESSES[$i+1]}
+    NEW_OOM=${PROCESSES[$i+2]}
+    NEW_POL=${PROCESSES[$i+3]}
+    NEW_PRI=${PROCESSES[$i+4]}
+    PIDOF_LIST=$(pgrep $PROCESS_NAME | xargs)
+    if [ "x$PIDOF_LIST" = "x" ]; then
+      rc_service=$(grep -rlE "$RCD" -m 1 -e "$PROCESS_NAME" | grep -E "$RCD/S[0-9]+" | uniq | sort)
+      if [ "x$rc_service" != "x" ]; then
+        logme "Found an enabled boot scripts for e:'$PROCESS_NAME', but it is not running. Attempting a restart..."
+        for iscript in $rc_service; do
+          "$iscript" restart
+        done
+      fi
+    else
+    for pid in $PIDOF_LIST; do
+      TASKS=$(ls /proc/$pid/task | xargs)
+      if [ "x$NEW_POL" = "xno" ]; then :; else
+        "$CHRT_BIN" -a$NEW_POL -p $NEW_PRI $pid
+      fi
+      if [ "x$NEW_NICE" = "xno" ]; then :; else
+        "$RENICE_BIN" $NEW_NICE $TASKS
+      fi
+      for task in $TASKS; do
+        if [ "x$NEW_OOM" = "xno" ]; then :; else
+          printf '%s' "$NEW_OOM" > /proc/$task/oom_score_adj
+        fi
+      done
+    done
+    fi
+  done
+  wait_sleep $ARG3
+done
+echo "Exit: PID file not found or another instance already running."
