@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+# We need to mount it because otherwise jffs2reset won't erase it!
+mkdir -p /tmp/.overlay && mount /dev/ubi0_1 /tmp/.overlay
+/sbin/jffs2reset "$@"
