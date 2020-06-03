@@ -1,0 +1,81 @@
+#!/bin/bash
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+. /lib/functions.sh
+
+CALIBRATIONS=/etc/calibration
+CURRENT_CAL_DIR=/lib/firmware/ath10k/QCA4019/hw1.0
+FILENAME=board-2.bin
+
+THIS=${0##*/}
+
+usage() {
+  echo "Usage: $THIS <code>"
+  echo "Changes the current calibration file of the device and then reboots."
+  echo "Available codes for <code>:"
+  ls -1 "$CALIBRATIONS" | xargs printf ' -- Calibration: %s\n'
+  echo ""
+  echo "Use the 'default' calibration to restore the original calibration."
+  echo ""
+  echo "  Oever González <notengobattery@gmail.com>"
+  exit 1
+}
+
+[ "$#" -lt 1 ] && usage
+
+board=$(board_name)
+if [ ! -f "$CURRENT_CAL_DIR/$FILENAME" ]; then
+  echo "No calibration board file is present on firmware."
+  echo "$CURRENT_CAL_DIR/$FILENAME: file not found."
+  exit 2
+fi
+
+if [ ! -d "$CALIBRATIONS/$1" ]; then
+  echo "Requested calibration not found."
+  echo "$CALIBRATIONS/$1: no such directory."
+  exit 3
+fi
+
+case "$board" in
+'linksys,ea6350v3')
+  ORIGINAL_NAME=board-linksys_ea6350v3.bin
+  VARIANT='variant=linksys-ea6350v3'
+  ;;
+*)
+  echo "Unsupported hardware '$board'."
+  exit 100
+  ;;
+esac
+
+readonly ORIGINAL=$CALIBRATIONS/$1/$ORIGINAL_NAME
+readonly CURRENT=$CURRENT_CAL_DIR/$FILENAME
+
+if strings "$ORIGINAL" | grep -q "QCA-ATH10K-BOARD"; then
+  echo "The selected file looks like an ath10k calibration board file."
+else
+  echo "$ORIGINAL: Not a valid calibration board file."
+  exit 4
+fi
+
+if strings "$ORIGINAL" | grep -q "$VARIANT"; then
+  echo "The file looks valid for the variant '$VARIANT'."
+else
+  echo "$ORIGINAL: Not a valid file for the variant '$VARIANT'."
+  exit 5
+fi
+
+ORI=$(wc -c "$CURRENT" | awk '{print $1}')
+NEW=$(wc -c "$ORIGINAL" | awk '{print $1}')
+if [ $ORI -eq $NEW ]; then
+  echo "File size match!"
+else
+  echo "$ORIGINAL: file size mismatch."
+  echo "Either the original or the new files are corrupted. Fix this problem manually."
+  exit 6
+fi
+
+rm "$CURRENT"
+cp "$ORIGINAL" "$CURRENT"
+chmod 644 "$CURRENT"
+reboot
