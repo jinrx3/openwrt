@@ -1,0 +1,40 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+START=00
+. /lib/functions.sh
+
+_echo_and_print(){
+  local _NVAL=$1
+  local _FILE=$2
+  (printf "$_NVAL" > "$_FILE")
+  printf "%s: expected \"%s\", current \"%s\"\n" "$_FILE" "$_NVAL" "$(cat $_FILE)"
+}
+
+_set_governor() {
+  case $(board_name) in
+  'linksys,ea6350v3')
+    # -- Avoid the CPU hitting the lower frequencies to reduce lag spikes
+    local CPUFREQ=/sys/devices/system/cpu/cpufreq
+    local POLICY0=$CPUFREQ/policy0
+    local GOVERNOR=schedutil
+    local MAXFREQ=$(cat $POLICY0/scaling_available_frequencies | awk '{print $NF}')
+    local MINFREQ=$(cat $POLICY0/scaling_available_frequencies | awk '{print $8}')
+    local LATENCY=$(cat $POLICY0/cpuinfo_transition_latency)
+    LATENCY=$(expr \( $LATENCY \* 7500 \) / 1000)
+    _echo_and_print "$GOVERNOR" $POLICY0/scaling_governor
+    _echo_and_print "$LATENCY" $CPUFREQ/$GOVERNOR/rate_limit_us
+    _echo_and_print "$MAXFREQ" $POLICY0/scaling_max_freq
+    _echo_and_print "$MINFREQ" $POLICY0/scaling_min_freq
+    ;;
+  esac
+}
+
+boot() {
+  # Enable these services always
+  /etc/init.d/0servmon enable
+  /etc/init.d/bootz enable
+  # Set the CPU Governor
+  _set_governor
+}
