@@ -1,0 +1,16 @@
+Package: iptables-mod-rtpengine
+Version: mr8.3.1.4-3
+Depends: libc, libxtables12
+Source: feeds/telephony/net/rtpengine
+SourceName: iptables-mod-rtpengine
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+Maintainer: Sebastian Kemper <sebastian_ml@gmx.net>
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 1306
+Filename: iptables-mod-rtpengine_mr8.3.1.4-3_arm_cortex-a7_neon-vfpv4.ipk
+Size: 2096
+SHA256sum: 21bb1e8199804082d98571ab443597186cefc8ea2b14a435eb4ddd530c13ead2
+Description:  Sipwise rtpengine iptables extension
+
