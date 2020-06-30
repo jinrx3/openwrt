@@ -1,0 +1,163 @@
+From: Oever González <notengobattery@gmail.com>
+Subject: [PATCH] ipq40xx: improve cpu clock
+Date: Fri, 6 Mar 2020 21:22:44 -0600
+
+This patch will match the values in the device tree for those found inside the
+OEM device tree and kernel source code and unlock all of the CPU operating
+points.
+
+Signed-off-by: Oever González <notengobattery@gmail.com>
+---
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -61,7 +61,7 @@
+ 			reg = <0x0>;
+ 			clocks = <&gcc GCC_APPS_CLK_SRC>;
+ 			clock-frequency = <0>;
+-			clock-latency = <256000>;
++			clock-latency = <100000>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 		};
+ 
+@@ -75,7 +75,7 @@
+ 			reg = <0x1>;
+ 			clocks = <&gcc GCC_APPS_CLK_SRC>;
+ 			clock-frequency = <0>;
+-			clock-latency = <256000>;
++			clock-latency = <100000>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 		};
+ 
+@@ -89,7 +89,7 @@
+ 			reg = <0x2>;
+ 			clocks = <&gcc GCC_APPS_CLK_SRC>;
+ 			clock-frequency = <0>;
+-			clock-latency = <256000>;
++			clock-latency = <100000>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 		};
+ 
+@@ -103,7 +103,7 @@
+ 			reg = <0x3>;
+ 			clocks = <&gcc GCC_APPS_CLK_SRC>;
+ 			clock-frequency = <0>;
+-			clock-latency = <256000>;
++			clock-latency = <100000>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 		};
+ 
+@@ -121,18 +121,87 @@
+ 		opp-48000000 {
+ 			opp-hz = /bits/ 64 <48000000>;
++			opp-microvolt = <1100000>;
+-			clock-latency-ns = <256000>;
++			clock-latency-ns = <100000>;
+ 		};
+ 		opp-200000000 {
+ 			opp-hz = /bits/ 64 <200000000>;
++			opp-microvolt = <1100000>;
+-			clock-latency-ns = <256000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-384000000 {
++			opp-hz = /bits/ 64 <384000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-413000000 {
++			opp-hz = /bits/ 64 <413000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-448000000 {
++			opp-hz = /bits/ 64 <448000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-488000000 {
++			opp-hz = /bits/ 64 <488000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
+ 		};
+ 		opp-500000000 {
+ 			opp-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <1100000>;
+-			clock-latency-ns = <256000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-512000000 {
++			opp-hz = /bits/ 64 <512000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-537000000 {
++			opp-hz = /bits/ 64 <537000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-565000000 {
++			opp-hz = /bits/ 64 <565000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
+ 		};
++		opp-597000000 {
++			opp-hz = /bits/ 64 <597000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-632000000 {
++			opp-hz = /bits/ 64 <632000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-672000000 {
++			opp-hz = /bits/ 64 <672000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
+ 		opp-716000000 {
+ 			opp-hz = /bits/ 64 <716000000>;
++			opp-microvolt = <1100000>;
+-			clock-latency-ns = <256000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-768000000 {
++			opp-hz = /bits/ 64 <768000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <100000>;
++		};
++		opp-823000000 {
++			opp-hz = /bits/ 64 <823000000>;
++			opp-microvolt = <1100500>;
++			clock-latency-ns = <100000>;
++		};
++		opp-896000000 {
++			opp-hz = /bits/ 64 <896000000>;
++			opp-microvolt = <1101000>;
++			clock-latency-ns = <100000>;
+- 		};
++		};
+ 	};
+ 
+--- a/drivers/clk/qcom/gcc-ipq4019.c
++++ b/drivers/clk/qcom/gcc-ipq4019.c
+@@ -587,6 +587,9 @@ static const struct freq_tbl ftbl_gcc_ap
+ 	F(632000000, P_DDRPLLAPSS, 1, 0, 0),
+ 	F(672000000, P_DDRPLLAPSS, 1, 0, 0),
+ 	F(716000000, P_DDRPLLAPSS, 1, 0, 0),
++	F(768000000, P_DDRPLLAPSS, 1, 0, 0),
++	F(823000000, P_DDRPLLAPSS, 1, 0, 0),
++	F(896000000, P_DDRPLLAPSS, 1, 0, 0),
+ 	{ }
+ };
+ 
+--- a/arch/arm/boot/dts/qcom-ipq4018-ea6350v3.dts
++++ b/arch/arm/boot/dts/qcom-ipq4018-ea6350v3.dts
+@@ -228,6 +228,6 @@ 	flash@1 {
+ 		status = "okay";
+ 		compatible = "spi-nand";
+ 		reg = <1>;
+-		spi-max-frequency = <24000000>;
++		spi-max-frequency = <48000000>;
+ 
+ 		partitions {
