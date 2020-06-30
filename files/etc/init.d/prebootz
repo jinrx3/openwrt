@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+
+START=00
+USE_PROCD=1
+NAME=prebootz
+PROG=/bin/prebootz
+
+start_service() {
+  procd_open_instance prebootz
+  procd_set_param command $PROG
+  procd_append_param command boot
+  procd_set_param stdout 0
+  procd_set_param stderr 0
+  procd_close_instance
+}
+
+reload_service() {
+  echo "Explicitly restarting the '$NAME' service..."
+  stop; start
+}
+
+restart_service() {
+  reload_service
+}
