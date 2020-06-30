@@ -1,0 +1,46 @@
+
+# --- --- --- ~ Start of the kernel configuration seed ~ --- --- --- #
+
+CONFIG_DEFAULT_HOSTNAME="EA6350v3"
+
+# --- --- --- Kernel Boot Options --- --- --- #
+
+CONFIG_ATAGS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_CMDLINE="rcutree.kthread_prio=49"
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_CMDLINE_EXTEND=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# --- --- --- CPU/Thermal Governor --- --- --- #
+
+CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=n
+CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=y
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+
+# --- --- --- SCSI --- --- --- #
+
+CONFIG_SCSI=m
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_SCSI_MQ_DEFAULT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# --- --- --- Task Scheduler --- --- --- #
+
+CONFIG_ARM_CPU_TOPOLOGY=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_SCHED_MC=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# --- --- --- Kernel Latency --- --- --- #
+
+CONFIG_HZ_100=y
+CONFIG_PREEMPT=n
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PREEMPT_VOLUNTARY=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PREEMPT_NONE=n
+# --- --- --- DO NOT edit the line above --- --- --- #
