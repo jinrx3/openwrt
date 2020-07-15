@@ -53,7 +53,7 @@ check_zswap() {
 	if [ "x$ZSWAP_ENABLED" = "x1" ]; then
 		config_get ALGORITHM zswap compressor_scale 'zstd'; export ALGORITHM
 		config_get ZSWAP_SCALE zswap compressor_factor '0.725'; export ZSWAP_SCALE
-		config_get ZSWAP_POOL zswap zswap_scale_pool '25.00'; export ZSWAP_POOL
+		config_get ZSWAP_POOL zswap zswap_scale_pool '12.50'; export ZSWAP_POOL
 		config_get ZSWAP_ZPOOL zswap zpool 'z3fold'; export ZSWAP_ZPOOL
 		config_get ZPOOL_RATIO $ZSWAP_ZPOOL expected_ratio '2.000'; export ZPOOL_RATIO
 		config_get DRIVER $ALGORITHM driver "$ALGORITHM"; export DRIVER
@@ -250,7 +250,8 @@ start() {
 	/sbin/swapon -d -p 1000 $zram_dev && \
 		{ log_msg "activated '$zram_dev' for swapping ($rsize MiB)"; } || \
 		{ log_msg "error: cannot enable swap inside the device '$zram_dev'"; exit 6; }
-	ap_if_no_ma_in "/bin/zram compact" "0 */6 * * *	/bin/zram compact" "/etc/crontabs/root"
+	ap_if_no_ma_in "/bin/zram compact" "0 */3 * * *	/bin/zram compact" "/etc/crontabs/root"
+	(sleep 3m; /bin/zram compact) &
 }
 
 zram_backing_remove() {
@@ -287,6 +288,11 @@ stop() {
 	done
 }
 
+linux_compact() {
+	sync; printf "3" > /proc/sys/vm/drop_caches; sync; sleep 5
+	printf "1" > /proc/sys/vm/compact_memory
+}
+
 zram_compact() {
 	local base=$(basename "$1")
 	local block_entry=/sys/block/$base
@@ -296,8 +302,7 @@ zram_compact() {
 	log_msg "Compacting zram device '$base'..."
 	printf "idle" > $block_entry/writeback
 	printf "huge" > $block_entry/writeback
-	printf "1" > /proc/sys/vm/compact_memory
-	printf "1" > $block_entry/compact
+	linux_compact; printf "1" > $block_entry/compact; linux_compact
 	local new_mem_used=$(awk '{print $3}' $block_entry/mm_stat)
 	local new_size=$(awk '{print $2}' $block_entry/mm_stat)
 	log_msg "Memory usage reduced by $(_do_math 2 \
@@ -305,6 +310,7 @@ zram_compact() {
 	local new_overhead=$(_do_math 0 "$new_mem_used - $new_size")
 	log_msg "Memory overhead reduced by $(_do_math 2 \
 	  "($old_overhead+1-$new_overhead)*100/($old_overhead+1)")%"
+	printf "all" > $block_entry/idle
 }
 
 compact() {
