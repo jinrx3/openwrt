@@ -1,0 +1,341 @@
+Package: freifunk-common
+Version: 9
+Depends: libc, uci
+Section: luci
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 1608
+Filename: freifunk-common_9_arm_cortex-a7_neon-vfpv4.ipk
+Size: 2341
+SHA256sum: ded8d957546e9251f06f4285fa9dc58903bf6f9f82bbbecfb28b1dd20dad0ae2
+Description:  Common files and scripts that are needed to run free wireless mesh networks.
+
+Package: freifunk-firewall
+Version: 3
+Depends: libc, firewall
+Section: luci
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 1119
+Filename: freifunk-firewall_3_arm_cortex-a7_neon-vfpv4.ipk
+Size: 1963
+SHA256sum: 353bff2b59fc611fb49840db1444d5014c4f09417e4dba8b22e7d54ff8e5ee74
+Description:  Various firewall extensions for Freifunk. Includes NAT fixes and advanced settings.
+
+Package: freifunk-policyrouting
+Version: 7
+Depends: libc, ip
+Section: luci
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 2264
+Filename: freifunk-policyrouting_7_arm_cortex-a7_neon-vfpv4.ipk
+Size: 3004
+SHA256sum: b574b213b76e8d0a71196d5e186a8c5a7c247ec4b43e502253785eb7d788d324
+Description:  Allows you to send your own traffic via your own default gateway while sending traffic received from the mesh to a gateway in the mesh.
+
+Package: luci-app-freifunk-diagnostics
+Version: git-20.139.75442-05760f0
+Depends: libc
+Section: luci
+Architecture: all
+Installed-Size: 2190
+Filename: luci-app-freifunk-diagnostics_git-20.139.75442-05760f0_all.ipk
+Size: 3014
+SHA256sum: 66d5f4c32d108a4127ef1c0a23a47c2984bd267318aa85a7ecdd53802da6af39
+Description:  Tools for network diagnosis like traceroute and ping
+
+Package: luci-app-freifunk-policyrouting
+Version: git-20.139.75442-05760f0
+Depends: libc, freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 1156
+Filename: luci-app-freifunk-policyrouting_git-20.139.75442-05760f0_all.ipk
+Size: 1964
+SHA256sum: 0c22247a751cc70104f2d5348a0323c1a40f508c7f9f7e48bddc9e6f658866ef
+Description:  Policy routing for mesh traffic
+
+Package: luci-app-freifunk-widgets
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 4331
+Filename: luci-app-freifunk-widgets_git-20.139.75442-05760f0_all.ipk
+Size: 5119
+SHA256sum: 5410b6ac0f287ff5e30bc22473686ab427aca16ce7f43d2c12aae0bf50b0cd57
+Description:  Widgets for the Freifunk index page
+
+Package: luci-app-meshwizard
+Version: git-20.139.75442-05760f0
+Depends: libc, meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 2749
+Filename: luci-app-meshwizard_git-20.139.75442-05760f0_all.ipk
+Size: 3571
+SHA256sum: d43144d3456d2639b51a11ae6c119f612f302252ef623bb9313d209b8fcc59fe
+Description:  Shellscript based wizard to setup mesh networks
+
+Package: luci-i18n-freifunk-en
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 274
+Filename: luci-i18n-freifunk-en_git-20.139.75442-05760f0_all.ipk
+Size: 1027
+SHA256sum: 313ca3b144c9999ec62a680708e96aca3e8c2021b20ea028df31f6d72704e3b1
+Description:  Translation for luci-mod-freifunk - English
+
+Package: luci-i18n-freifunk-es
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 3086
+Filename: luci-i18n-freifunk-es_git-20.139.75442-05760f0_all.ipk
+Size: 3838
+SHA256sum: 0fd15bc45279ca536d25eb8dd4023f3f00fbaf920bb1b953677a4d534195b60d
+Description:  Translation for luci-mod-freifunk - Español (Spanish)
+
+Package: luci-i18n-freifunk-fr
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 287
+Filename: luci-i18n-freifunk-fr_git-20.139.75442-05760f0_all.ipk
+Size: 1054
+SHA256sum: eff1680d4d8e9a890ad697a1043d7fe2a58b53f09ecafad572800bbb4527c747
+Description:  Translation for luci-mod-freifunk - Français (French)
+
+Package: luci-i18n-freifunk-it
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 3152
+Filename: luci-i18n-freifunk-it_git-20.139.75442-05760f0_all.ipk
+Size: 3890
+SHA256sum: c4431620b9d776e1f92262af3e3243e3bef38c70693275e885c04be8979451f8
+Description:  Translation for luci-mod-freifunk - Italiano (Italian)
+
+Package: luci-i18n-freifunk-ja
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 300
+Filename: luci-i18n-freifunk-ja_git-20.139.75442-05760f0_all.ipk
+Size: 1078
+SHA256sum: 5fe9938e24125b90db32d4ae12fa0a10c7308422f6e30d52b770c6991a2a0e7c
+Description:  Translation for luci-mod-freifunk - 日本語 (Japanese)
+
+Package: luci-i18n-freifunk-policyrouting-en
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 288
+Filename: luci-i18n-freifunk-policyrouting-en_git-20.139.75442-05760f0_all.ipk
+Size: 1060
+SHA256sum: 0266c472381fae4ce82f944e5e8f6a393115c0f962b3432768b1e4dad9057ba1
+Description:  Translation for luci-app-freifunk-policyrouting - English
+
+Package: luci-i18n-freifunk-policyrouting-es
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 888
+Filename: luci-i18n-freifunk-policyrouting-es_git-20.139.75442-05760f0_all.ipk
+Size: 1681
+SHA256sum: 679cb2c86cb5e14c5ce4b333984bd70e98a63784f5310e323067d6faec7d72a0
+Description:  Translation for luci-app-freifunk-policyrouting - Español (Spanish)
+
+Package: luci-i18n-freifunk-policyrouting-fr
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 300
+Filename: luci-i18n-freifunk-policyrouting-fr_git-20.139.75442-05760f0_all.ipk
+Size: 1082
+SHA256sum: cccc8dd084393f008082d54030cc3b72ceb7f350269477cdae1ff67043368e65
+Description:  Translation for luci-app-freifunk-policyrouting - Français (French)
+
+Package: luci-i18n-freifunk-policyrouting-it
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 1019
+Filename: luci-i18n-freifunk-policyrouting-it_git-20.139.75442-05760f0_all.ipk
+Size: 1810
+SHA256sum: c4ebd3e0b2b4a3f5fb60b078f3565a3194420f7470f318bf46cb553d333e24aa
+Description:  Translation for luci-app-freifunk-policyrouting - Italiano (Italian)
+
+Package: luci-i18n-freifunk-policyrouting-ja
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 313
+Filename: luci-i18n-freifunk-policyrouting-ja_git-20.139.75442-05760f0_all.ipk
+Size: 1108
+SHA256sum: 3e0cd32023ddc8e55d7fe683d5a7a771011d70fa5d865d98c3fc9356ac828f23
+Description:  Translation for luci-app-freifunk-policyrouting - 日本語 (Japanese)
+
+Package: luci-i18n-freifunk-policyrouting-pt
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 547
+Filename: luci-i18n-freifunk-policyrouting-pt_git-20.139.75442-05760f0_all.ipk
+Size: 1337
+SHA256sum: 507e9d63e69ba22ea8e0c9c1b96d8a68260d9f2db3d21ba52e6080ce7ab10dec
+Description:  Translation for luci-app-freifunk-policyrouting - Português (Portuguese)
+
+Package: luci-i18n-freifunk-policyrouting-ru
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 1170
+Filename: luci-i18n-freifunk-policyrouting-ru_git-20.139.75442-05760f0_all.ipk
+Size: 1978
+SHA256sum: ee492a4da6ffda5f99b242da7af7ef29e87f0eb8e9b7739e5f1be085b656fc8a
+Description:  Translation for luci-app-freifunk-policyrouting - Русский (Russian)
+
+Package: luci-i18n-freifunk-pt
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 831
+Filename: luci-i18n-freifunk-pt_git-20.139.75442-05760f0_all.ipk
+Size: 1603
+SHA256sum: e21aa29f89a8b048cbeed231e4469ad36a6fae1d2a279dcef171c0462a0e1177
+Description:  Translation for luci-mod-freifunk - Português (Portuguese)
+
+Package: luci-i18n-freifunk-ru
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 3706
+Filename: luci-i18n-freifunk-ru_git-20.139.75442-05760f0_all.ipk
+Size: 4488
+SHA256sum: 8e6c5025c8c36615c2f39ac422cbeb760aee6bb325c28d8f78242e4d219a820e
+Description:  Translation for luci-mod-freifunk - Русский (Russian)
+
+Package: luci-i18n-meshwizard-en
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 278
+Filename: luci-i18n-meshwizard-en_git-20.139.75442-05760f0_all.ipk
+Size: 1044
+SHA256sum: fc3307b439181f13895c5d0436239be493249b59c225c57287f619235ed83d36
+Description:  Translation for luci-app-meshwizard - English
+
+Package: luci-i18n-meshwizard-es
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 1435
+Filename: luci-i18n-meshwizard-es_git-20.139.75442-05760f0_all.ipk
+Size: 2228
+SHA256sum: 82fb1d13a7cfb67bba248626c2cc8e0f0184e9d06ef8c0b8f9279fc1c25e6f31
+Description:  Translation for luci-app-meshwizard - Español (Spanish)
+
+Package: luci-i18n-meshwizard-fr
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 1328
+Filename: luci-i18n-meshwizard-fr_git-20.139.75442-05760f0_all.ipk
+Size: 2124
+SHA256sum: 7adf1495c1039135c4debe2a152cab2c62a53dab666ecce92717a7e27b39a158
+Description:  Translation for luci-app-meshwizard - Français (French)
+
+Package: luci-i18n-meshwizard-it
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 1575
+Filename: luci-i18n-meshwizard-it_git-20.139.75442-05760f0_all.ipk
+Size: 2361
+SHA256sum: a424769db92eef890e4ab59f7a3a1e29cd1d370434badef2cfb79e5ce0342ed4
+Description:  Translation for luci-app-meshwizard - Italiano (Italian)
+
+Package: luci-i18n-meshwizard-ja
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 304
+Filename: luci-i18n-meshwizard-ja_git-20.139.75442-05760f0_all.ipk
+Size: 1092
+SHA256sum: c385ce0f312788f70549199891b19e3e288fbcfcf54fbea5c9a5d91b09caaa12
+Description:  Translation for luci-app-meshwizard - 日本語 (Japanese)
+
+Package: luci-i18n-meshwizard-pt
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 1069
+Filename: luci-i18n-meshwizard-pt_git-20.139.75442-05760f0_all.ipk
+Size: 1865
+SHA256sum: b8a708df7ed9fc44112e5bae2fb754d7bdffce927c87f86b7e1dd016e129b756
+Description:  Translation for luci-app-meshwizard - Português (Portuguese)
+
+Package: luci-i18n-meshwizard-ru
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-app-meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 1953
+Filename: luci-i18n-meshwizard-ru_git-20.139.75442-05760f0_all.ipk
+Size: 2725
+SHA256sum: b7128d51ed65d69dc14368ce991b2de651e70cc2fe68fc67e876cf057641f961
+Description:  Translation for luci-app-meshwizard - Русский (Russian)
+
+Package: luci-mod-freifunk
+Version: git-20.139.75442-05760f0
+Depends: libc, luci-mod-admin-full, luci-lib-json, luci-lib-ipkg, freifunk-firewall, freifunk-common
+Section: luci
+Architecture: all
+Installed-Size: 11474
+Filename: luci-mod-freifunk_git-20.139.75442-05760f0_all.ipk
+Size: 12299
+SHA256sum: 7c47b56fb723e47e17efe735bce957423970861f203b76898a6ee4f80fb82433
+Description:  LuCI Freifunk module
+
+Package: luci-theme-freifunk-generic
+Version: git-20.139.75442-05760f0
+Depends: libc
+Section: luci
+Architecture: all
+Installed-Size: 14594
+Filename: luci-theme-freifunk-generic_git-20.139.75442-05760f0_all.ipk
+Size: 15359
+SHA256sum: c06513444554e6c05ea4aae5d6937ce8f5a87d269057d8492fc221b6ed234294
+Description:  Freifunk Generic Theme
+
+Package: meshwizard
+Version: 0.3.3
+Depends: libc, firewall
+Section: luci
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 13085
+Filename: meshwizard_0.3.3_arm_cortex-a7_neon-vfpv4.ipk
+Size: 13799
+SHA256sum: f817cdd537bf2ba701550487cf94be6d481ccd6cf9a481d1ffea55a0fb1ee805
+Description:  A shellscript based wizard to simplify the setup of a typical mesh node (e.g. for Freifunk.net)
+
