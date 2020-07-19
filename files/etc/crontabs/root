@@ -1,0 +1,8 @@
+# Compact zram every 3 hours
+0 */3 * * *	/bin/zram compact
+
+# Restart nlbwmon every midnight
+0 0 * * *	/etc/init.d/nlbwmon restart
+
+# Reload Adblock the 1st of every month
+30 2 1 * *	/etc/init.d/adblock reload
