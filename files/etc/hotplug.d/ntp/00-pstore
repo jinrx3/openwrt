@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "x$ACTION" = "xstratum" ]; then
+  output=$(date "+%Y%m%d[%H%M%S]")
+  output_dir=/rom/bootfs/pstore/$output
+  mv -f /sys/fs/pstore/* $output_dir
+fi
