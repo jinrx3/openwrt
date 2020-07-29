@@ -1,0 +1,83 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+START=00
+. /lib/functions.sh
+
+_echo_and_print(){
+  local _NVAL="$1"
+  local _FILE="$2"
+  (printf "$_NVAL" > "$_FILE")
+  printf "%s: expected \"%s\", current \"%s\"\n" "$_FILE" "$_NVAL" "$(cat "$_FILE")"
+}
+
+_set_governor() {
+  case "$(board_name)" in
+  'linksys,ea6350v3')
+    # -- Avoid the CPU hitting the lower frequencies to reduce lag spikes
+    local CPUFREQ="/sys/devices/system/cpu/cpufreq"
+    local POLICY0="$CPUFREQ/policy0"
+    local GOVERNOR="schedutil"
+    local MAXFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $NF}')"
+    local MINFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $8}')"
+    local LATENCY="$(cat "$POLICY0/cpuinfo_transition_latency")"
+    LATENCY=$(expr '(' "$LATENCY" '*' 750 ')' '/' 1000)
+    _echo_and_print "$GOVERNOR" "$POLICY0/scaling_governor"
+    _echo_and_print "$LATENCY" "$CPUFREQ/$GOVERNOR/rate_limit_us"
+    _echo_and_print "$MAXFREQ" "$POLICY0/scaling_max_freq"
+    _echo_and_print "$MINFREQ" "$POLICY0/scaling_min_freq"
+    ;;
+  esac
+}
+
+_find_irq() {
+  local name=$1
+  awk -F'[: ]' '/'"$name"'/{print $2}' /proc/interrupts
+}
+
+_set_affinity() {
+  local code=$1
+  _iter() {
+    local i0=$1; shift
+    _prq(){ printf $(printf '%x' $((1 << $2))) > /proc/irq/$1/smp_affinity;}
+    _prq $i0 $1; shift
+    while read -r irq && [ "x" != "x$1" ]; do
+      _prq $irq $1; shift
+    done
+    export irq
+  }
+  while true; do
+    if [ "x" == "x$irq" ]; then
+      read -r irq || break
+    fi
+    _iter $irq $(echo "$code" | grep -o '.')
+  done
+}
+
+_set_ath() {
+  local special=/sys/kernel/debug/ieee80211/$1/ath10k/ct_special
+  local debug_level=/sys/kernel/debug/ieee80211/$1/ath10k/debug_level
+  while [ ! -f "$special" ]; do sleep 1; done
+  _echo_and_print "0x10000000" "$debug_level"
+  _echo_and_print "0x1000000001" "$special"
+  _echo_and_print "0x100100000000" "$special"
+}
+
+boot() {
+  # Enable these services always
+  /etc/init.d/0servmon enable
+  /etc/init.d/bootz enable
+  # Set the CPU Governor
+  _set_governor
+  # Tune some hardware features
+  ethtool -C eth0 tx-usecs 160 rx-usecs 160
+  ethtool -K eth0 tx-tcp-mangleid-segmentation on tx-nocache-copy on
+  _find_irq edma_eth_rx | _set_affinity 3210
+  _find_irq edma_eth_tx | _set_affinity 3210
+  _find_irq bam_dma | _set_affinity 32
+  _find_irq usb | _set_affinity 21
+  _find_irq spi |_set_affinity 1
+  _set_ath phy0; _set_ath phy1
+  _find_irq ath10k | _set_affinity 23
+}
