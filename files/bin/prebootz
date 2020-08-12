@@ -1,0 +1,43 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+. /lib/functions.sh
+. /lib/ntb/irq.sh
+
+set_file(){
+  local _NVAL="$1"
+  local _FILE="$2"
+  printf "$_NVAL" > "$_FILE"
+}
+
+set_governor() {
+  case "$(board_name)" in
+  'linksys,ea6350v3')
+    # -- Avoid the CPU hitting the lower frequencies to reduce lag spikes
+    local CPUFREQ="/sys/devices/system/cpu/cpufreq"
+    local POLICY0="$CPUFREQ/policy0"
+    local GOVERNOR="schedutil"
+    local MAXFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $NF}')"
+    local MINFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $8}')"
+    local LATENCY="$(cat "$POLICY0/cpuinfo_transition_latency")"
+    LATENCY=$(expr '(' "$LATENCY" '*' 750 ')' '/' 1000)
+    set_file "$GOVERNOR"  "$POLICY0/scaling_governor"
+    set_file "$LATENCY"   "$CPUFREQ/$GOVERNOR/rate_limit_us"
+    set_file "$MAXFREQ"   "$POLICY0/scaling_max_freq"
+    set_file "$MINFREQ"   "$POLICY0/scaling_min_freq"
+    ;;
+  esac
+}
+
+boot() {
+  # Enable these services always
+  /etc/init.d/0servmon enable
+  /etc/init.d/bootz enable
+  # Set the CPU Governor
+  set_governor
+  # Tune some hardware features
+  ethtool -C eth0 'tx-usecs' 64 'rx-usecs' 64
+  ethtool -K eth0 'tx-tcp-mangleid-segmentation' on 'tx-nocache-copy' on
+  balance_irq
+}
