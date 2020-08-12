@@ -1,0 +1,148 @@
+
+
+# --- --- --- ~ Start of the image configuration seed ~ --- --- --- #
+
+# - target configuration
+CONFIG_TARGET_SQUASHFS_BLOCK_SIZE=1024
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_ipq40xx=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_ipq40xx_generic=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_ipq40xx_generic_DEVICE_linksys_ea6350v3=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - compile configuration
+CONFIG_CCACHE=y
+CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -pipe -O3"
+CONFIG_GCC_USE_GRAPHITE=y
+CONFIG_TARGET_OPTIMIZATION="-pipe -O3"
+
+
+# - ath
+CONFIG_PACKAGE_ath10k-firmware-qca4019-ct-full-htt=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_kmod-ath10k-ct=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - utilities
+CONFIG_PACKAGE_bash=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_bzip2=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_ethtool=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_gawk=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_haveged=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_nano=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_openssh-sftp-server=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-utils=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_sudo=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_tc=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_wpad-openssl=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- custom packages
+CONFIG_PACKAGE_chrt=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_kmod-io-schedulers=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_luci-app-compressed-memory=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- shadow-utils
+CONFIG_PACKAGE_shadow-chsh=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-groupadd=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-groupdel=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-nologin=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-useradd=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_shadow-userdel=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - luci
+CONFIG_PACKAGE_luci-ssl-openssl=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- luci apps
+CONFIG_PACKAGE_luci-app-advanced-reboot=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_luci-app-uhttpd=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_luci-app-unbound=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - disk
+CONFIG_PACKAGE_blkid=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_block-mount=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_lsblk=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_mount-utils=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- filesystem utilities
+CONFIG_PACKAGE_ntfs-3g-utils=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- filesystem kmods
+CONFIG_PACKAGE_kmod-fs-exfat=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_kmod-fs-ext4=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_kmod-fs-f2fs=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_PACKAGE_kmod-fs-msdos=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - kernel configuration
+CONFIG_KERNEL_CC_OPTIMIZE_FOR_PERFORMANCE=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_KERNEL_TASKSTATS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# !- busybox
+
+# -- busybox tools
+CONFIG_BUSYBOX_CONFIG_CKSUM=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_RENICE=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_STAT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- busybox extras
+CONFIG_BUSYBOX_CONFIG_FEATURE_STAT_FILESYSTEM=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_FEATURE_STAT_FORMAT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - versioning
+CONFIG_VERSION_BUG_URL="https://github.com/NoTengoBattery/openwrt/issues"
+CONFIG_VERSION_DIST="NoTengoBattery"
+CONFIG_VERSION_HOME_URL="https://github.com/NoTengoBattery/openwrt/releases"
+CONFIG_VERSION_HWREV="v3"
+CONFIG_VERSION_MANUFACTURER="Linksys"
+CONFIG_VERSION_MANUFACTURER_URL="https://www.linksys.com"
+CONFIG_VERSION_PRODUCT="EA6350"
+CONFIG_VERSION_REPO="https://raw.githubusercontent.com/NoTengoBattery/openwrt/v1.16.oc/bin"
+CONFIG_VERSION_SUPPORT_URL="https://github.com/NoTengoBattery/openwrt/issues"
