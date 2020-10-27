@@ -1,13 +1,13 @@
 Package: base-files
-Version: 232-r0+14762-b1fa31ebbc
+Version: 232-r0+14764-c688dcacfe
 Depends: libc, netifd, procd, jsonfilter, usign, openwrt-keyring, ubi-utils, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a7_neon-vfpv4
-Installed-Size: 49093
-Filename: base-files_232-r0+14762-b1fa31ebbc_arm_cortex-a7_neon-vfpv4.ipk
-Size: 50129
-SHA256sum: fbd666b4d51e279276a1277ee32ac52a2d58ada6c1c9b803ccbd902b1bfca568
+Installed-Size: 49094
+Filename: base-files_232-r0+14764-c688dcacfe_arm_cortex-a7_neon-vfpv4.ipk
+Size: 50130
+SHA256sum: cb7b1219d27d4b973981aab4f1eb702759938d0ea1e3574ee1000e3eec2b6b34
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
