@@ -1,0 +1,54 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+. /lib/functions.sh
+. /lib/ntb/irq.sh
+
+set_file() {
+  local _NVAL="$1"
+  local _FILE="$2"
+  printf "$_NVAL" > "$_FILE"
+}
+
+fix_wlan_path() {
+  RADIO0=$(uci get wireless.radio0.path)
+  RADIO1=$(uci get wireless.radio1.path)
+  if [ "x$RADIO0" = "xFIXME" ]; then
+    FIX0=yes
+  fi
+  if [ "x$RADIO1" = "xFIXME" ]; then
+    FIX1=yes
+  fi
+
+  if [ "x$FIX0" = "xyes" ]; then
+    uci set wireless.radio0.path='platform/soc/a000000.wifi'
+  fi
+  if [ "x$FIX1" = "xyes" ]; then
+    uci set wireless.radio1.path='platform/soc/a800000.wifi'
+  fi
+}
+
+set_governor() {
+  # -- Avoid the CPU hitting the lower frequencies to reduce lag spikes
+  local CPUFREQ="/sys/devices/system/cpu/cpufreq"
+  local POLICY0="$CPUFREQ/policy0"
+  local GOVERNOR="schedutil"
+  local MAXFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $NF}')"
+  local MINFREQ="$(cat "$POLICY0/scaling_available_frequencies" | awk '{print $8}')"
+  local LATENCY="$(cat "$POLICY0/cpuinfo_transition_latency")"
+  LATENCY=$(expr '(' "$LATENCY" '*' 750 ')' '/' 1000)
+  set_file "$GOVERNOR"  "$POLICY0/scaling_governor"
+  set_file "$LATENCY"   "$CPUFREQ/$GOVERNOR/rate_limit_us"
+  set_file "$MAXFREQ"   "$POLICY0/scaling_max_freq"
+  set_file "$MINFREQ"   "$POLICY0/scaling_min_freq"
+  set_file "cpufreq: GOV MAX/MIN/LAT -> $GOVERNOR $MAXFREQ/$MINFREQ/$LATENCY" "/dev/kmsg"
+}
+
+boot() {
+  fix_wlan_path
+  # Set the CPU Governor
+  set_governor
+  # Tune some hardware features
+  balance_irq
+}
