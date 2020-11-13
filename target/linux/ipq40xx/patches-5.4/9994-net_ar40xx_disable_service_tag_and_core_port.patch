@@ -1,0 +1,47 @@
+From: Oever González <notengobattery@gmail.com>
+Subject: [PATCH] net: ar40xx: disable service tag and core port
+Date: Sat, 18 Jul 2020 15:23:22 -0600
+
+The OpenWrt commit 9da2b56760 disabled the "double tagging" present in the
+upstream driver, since it emulates a dual MAC device by forcing VLAN 1 and 2 to
+be LAN and WAN respectively.
+
+These patches break the switch functionality when the device is using the
+patched version of the EDMA driver. This commit removes the code that is known
+to break the switch functionality.
+
+Signed-off-by: Oever González <notengobattery@gmail.com>
+---
+--- a/drivers/net/phy/ar40xx.c
++++ b/drivers/net/phy/ar40xx.c
+@@ -1247,10 +1247,6 @@ ar40xx_init_globals(struct ar40xx_priv *priv)
+ 	t = (AR40XX_PORT0_FC_THRESH_ON_DFLT << 16) |
+ 	      AR40XX_PORT0_FC_THRESH_OFF_DFLT;
+ 	ar40xx_write(priv, AR40XX_REG_PORT_FLOWCTRL_THRESH(0), t);
+-
+-	/* set service tag to 802.1q */
+-	t = ETH_P_8021Q | AR40XX_ESS_SERVICE_TAG_STAG;
+-	ar40xx_write(priv, AR40XX_ESS_SERVICE_TAG, t);
+ }
+ 
+ static void
+@@ -1591,17 +1587,8 @@ ar40xx_setup_port(struct ar40xx_priv *priv, int port, u32 members)
+ 	t |= pvid << AR40XX_PORT_VLAN0_DEF_CVID_S;
+ 	ar40xx_write(priv, AR40XX_REG_PORT_VLAN0(port), t);
+ 
+-	t = egress << AR40XX_PORT_VLAN1_OUT_MODE_S;
+-
+-	/* set CPU port to core port */
+-	if (port == 0)
+-		t |= AR40XX_PORT_VLAN1_CORE_PORT;
+-
+-	if (priv->vlan_tagged & BIT(port))
+-		t |= AR40XX_PORT_VLAN1_PORT_VLAN_PROP;
+-	else
+-		t |= AR40XX_PORT_VLAN1_PORT_TLS_MODE;
+-
++	t = AR40XX_PORT_VLAN1_PORT_VLAN_PROP;
++	t |= egress << AR40XX_PORT_VLAN1_OUT_MODE_S;
+ 	ar40xx_write(priv, AR40XX_REG_PORT_VLAN1(port), t);
+ 
+ 	t = members;
