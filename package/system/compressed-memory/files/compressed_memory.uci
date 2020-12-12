@@ -29,7 +29,7 @@ config params 'zswap'
 	#   while zbud guarantees a compression ratio of 2.00
 	option zpool	'z3fold'
 	# Adjust the system swappiness to this value when zswap is enabled
-	option swappiness	'65'
+	option swappiness	'80'
 	# zswap will be adjusted in the presence of zram, and also will modify zram
 	# parameters in order to provide better interoperability and to prevent
 	# excesive memory usage.
@@ -52,34 +52,34 @@ config params 'zswap'
 config compress 'zstd'
 	# zstandard is the algorithm that can potentially save the most memory
 	option driver	'zstd'
-	option expected_ratio	'4.699' # percentile 90 of 751 samples
+	option expected_ratio	'5.444' # percentile 95 of 751 samples
 	option streams_factor	'96.535'
 
 config compress 'deflate'
 	option driver	'deflate'
-	option expected_ratio	'4.666' # percentile 90 of 606 samples
+	option expected_ratio	'5.407' # percentile 95 of 606 samples
 	option streams_factor	'100.000'
 
 config compress 'lzo'
 	option driver	'lzo'
-	option expected_ratio	'4.276' # percentile 90 of 856 samples
+	option expected_ratio	'5.242' # percentile 95 of 856 samples
 	option streams_factor	'26.475'
+
+config compress 'lz4'
+	option driver	'lz4'
+	option expected_ratio	'5.233' # percentil 90 of 827 samples
+	option streams_factor	'21.735'
 
 config compress 'lzo_rle'
 	# lzo-rle is the faster of all and offers decent saving
 	option driver	'lzo-rle'
-	option expected_ratio	'4.197' # percentile 89 of 856 samples
+	option expected_ratio	'5.199' # percentile 95 of 856 samples
 	option streams_factor	'19.326'
 
 config compress 'lz4hc'
 	option driver	'lz4hc'
-	option expected_ratio	'4.047' # percentil 90 of 787 samples
+	option expected_ratio	'4.810' # percentil 95 of 787 samples
 	option streams_factor	'45.835'
-
-config compress 'lz4'
-	option driver	'lz4'
-	option expected_ratio	'4.232' # percentil 90 of 827 samples
-	option streams_factor	'21.735'
 
 # Define the zpools:
 #  These zpools will limit the maximum compression ratio of zswap
