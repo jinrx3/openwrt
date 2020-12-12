@@ -1,0 +1,307 @@
+EA6350v3/XX8300/Convexa Custom ROM v2.05
+=========
+Based on OpenWrt commit 5d2b577a53021372ffe8327a102859124d9dffd2
+If you want to apply the patches, first checkout the above commit and git-apply
+the patches accordingly. After that, you can build, update and modify your copy.
+
+> **NOTE: The download link is at the very bottom of this text. Please: read all
+ the notes and then continue to download. This page is designed to force you to
+ do that.**
+
+## Don't forget to apply the hotfixes!
+
+Since I'm not perfect, and I have not a team of engineers to support my work;
+some times I do forget some details when the image is ready and it's not worth
+to re-build. Instead of just keeping the annoyances go along, I decided to
+implement the "hotfixes" mechanics.
+
+Here is how it works:
+1. Flash the image as always.
+2. Once your device boots, go immediately to the `Backup / Flash Firmware` in
+  LuCI.
+3. Upload the `hotfixes.tar.gz` in the `Restore` section, as if it's a backup.
+4. That's all!
+
+## A better feedback solution!
+
+I've implemented the `ramoops` feature. If you find your device crashing or
+becoming inestable, please:
+
+1. Go to the settings in LuCI and enable the debug levels for the logs
+  1.1. Verify that the size is `1536` and the file is `/dev/pmsg0`. Change it
+      accordingly.
+2. Wait the device to crash or to become inestable.
+3. If the device crashes, go to the point 5.
+4. If it doesn't crash, reboot as soon as you can. Try to not force reboot, if
+  you can, by unplugging since it will clear the data from RAM and with it, the
+  logs.
+5. Check the `/sys/fs/pstore` folder, and if it's not empty, collect a copy of
+  these files.
+6. Along with the files from point 5, if any, collect a copy of the directory
+  tree inside `/bootfs/pstore`, which are the collected logs over time.
+7. Send these files to my e-mail. Don't expect an answer by email and instead
+  open a GitHub issue. If you don't have a GitHub account, explain it in your
+  email and I will open the issue and document the problem for you.
+8. Over time, your boot partition may become full. Please cleanup your the logs
+  from `/bootfs/pstore` if you are short in space. You can disable the
+  automatic collection of logs by deleting `/etc/hotplug.d/ntp/00-pstore`, but
+  `PSTORE` itself is a kernel feature that cannot be disabled, unless you build
+  your own kernel. All logs will be removed automatically after a system
+  upgrade.
+
+> Discussion about this work, feature requests and questions in my OpenWrt
+ [thread](https://forum.openwrt.org/t/44125). Bug reports in the GitHub Issues page.
+
+## How to install
+
+> Warning: the 'sysupgrade' procedure will reset some settings to their default
+ values. You can see the changes made to your system by looking at the 'bootz'
+ files in `/etc/bootz`.
+
+First, decompress the downloaded file. This file is compressed using `zstd` and
+it's a tarball.
+ - If you are using **Windows**, you can install [PeaZip](https://www.peazip.org)
+ - If you are using **macOS**, you can install [Keka (beta)](https://beta.keka.io)
+ - If you are using **Linux**, you probably have all the tools already installed
+
+You will find a folder once decompressed. Inside this folder, you will find the
+following folders:
+ - `bin`: this contains the two "flasheable" versions of the firmware. One is a
+  `sysupgrade` image that you will use to update from another version or from
+  OpenWrt; and the other is a `factory` image which you will use to flash
+  directly from the Linksys firmware.
+ - `info`: this folder contains the manifests, the configuration seed and the
+  checksums. Also, it contains a copy of this document.
+ - `patches`: it contains all the patches that apply cleanly over the fork
+  point. Use them if you download the source code and want to build your own
+  firmware form a working copy. Also, they need to be distributed due to the
+  software licence.
+
+### From the OpenWrt firmware or from another version of this firmware
+
+Go to LuCI and apply the `sysupgrade` image. Either from the OpenWrt firmware or
+from another version of this firmware. This firmware **will not** apply cleanly
+over the stock OpenWrt firmware.
+
+> **Note**: You should perform the upgrade without keeping/saving your settings,
+ otherwise, your device will likely soft-brick. If it does brick, you will need
+ to trigger a recovery as documented in the wiki. This happens because this
+ build contains patches to make the switch work, but they will stop the device
+ from running with the OpenWrt's default configuration and viceversa.
+
+Go to http://192.168.xx.1/cgi-bin/luci/admin/system/flash if you are using
+another version of this firmware. Go to https://192.168.1.1/cgi-bin/luci/admin/system/flash
+if you are using the OpenWrt firmware. Or you can use the command line if you
+have not installed LuCI. Then, apply the update accordingly.
+
+### From the Linksys EA6350v3/XX8300 firmware
+
+From the OpenWrt [web page for the device](https://openwrt.org/toh/linksys/linksys_ea6350_v3):
+
+- Attach to a LAN port on the router
+- Connect to the Linksys Smart Wi-Fi Page (default 192.168.1.1) and login
+- Select the "Connectivity" tab on the left
+- Find the option for manual upgrade on the panel
+- Select browse, and browse to the `factory` binary image
+- Click update
+- Read and accept the warning
+- The router LED will start blinking. Wait for the device to boot up
+- When the router LED goes in a slow blinking, you can now navigate to
+  http://192.168.xx.1 to your new OpenWrt installation
+
+### From the GL.iNet firmware
+
+For the Convexa-B, you should follow the steps documented in the GL.iNet web
+page. It involves booting into the recovery u-boot mode and upgrading the
+firmware from there.
+
+Note that for the Convexa-S, you will need to flash a "Factory to OpenWrt"
+image first and then flash this firmware. Otherwise, your device will brick and
+you will need to use a SPI programmer, contact the GL.iNet support team and
+flash the NAND chip with the file they will make for you.
+
+### Reverting back to OEM in one click (dual partition devices only)
+
+> WARNING: this method only works if you installed the provided `factory` image
+ directly from the Linksys firmware. If you have already "sysupgraded", this
+ method will not work.
+
+If you have not installed another update of this firmware or OpenWrt, you can go
+to: http://192.168.xx.1/cgi-bin/luci/admin/system/advanced_reboot
+
+Then, you can click the "Reboot to alternative partition..." to revert back to
+the OEM firmware. Wait for the device to reboot and load te Linksys firmware.
+
+> If you have installed either OpenWrt or this firmware twice or more, refer to
+ the OpenWrt forum for reverting back to stock (EA6350v3 only): [wiki](https://openwrt.org/toh/linksys/linksys_ea6350_v3)
+
+## Features and packages
+
+The binary installable image contains the following packages and features:
+- `testcalibration` script for easily and safely testing calibration board files
+ if your wireless performance is not optimal (EA6350v3 only).
+- `BackToStock` script for easily and safely reverting back from the OpenWrt
+ firmware to the Linksys stock firmware. Refer to the documentation in the
+ wiki [here](https://openwrt.org/toh/linksys/linksys_ea6350_v3) (EA6350v3 only).
+- extroot by default
+  - using the OEM partition as `/overlay` for added storage to install packages
+   and for extending the firmware ROM lifespan (EA6350v3/XX8300/Convexa-S only).
+- DNS
+  - Disabled `dnsmasq` DNS forwarder in favour of `unbound` resolver with TLS
+  - Configured Unbound as a TLS forwarder for a secure DNS server (currently:
+   Quad9)
+  - Note that Quad9 already implements DNSSEC, you don't need to configure the
+   router's slow CPU to do perform the validation again.
+- Utilities
+  - kernel features: taskstats (for atop/htop)
+  - hardware: blkid, lsblk
+  - tools: bash, nano, nologin, sudo
+  - performance: haveged, schedutil, compressed-memory
+- LuCI
+  - uhttpd-openssl
+  - apps
+    - advanced-reboot, compressed-memory, uhttpd, unbound
+- File Systems
+  - exfat, ext4, f2fs, msdos (FAT16/32)
+- Kernel features and modules
+  - USB Support
+  - USB Attached SCSI and USB Mass Storage
+  - New Linux IOSCHEDs evelators and Governors
+    - Governor: `schedutil` enabled by default for all CPU's
+    - IOSCHED: `kyber` by default for non rotational disks
+    - IOSCHED: `bfq` by default for rotational disks
+    - IOSCHED: `noop` by default for single-queue devices
+  - Fully preemptive @ 100 Hz kernel for more responsiveness
+- Minimum CPU frequency set to 512 MHz instead of 48 MHz
+- Enabled and unlocked all operation points to allow the CPU frequency scaling
+ governor `schedutil` to take better decisions
+- Changed clock latency from 256000ns to 100000ns (which is the value used by
+ Qualcomm)
+- Patched VLAN to work as expected for all supported IPQ40xx targets
+- Patched SQUASHFS to avoid crashes due to spurious SPI errors
+
+## General notes
+
+All kernel modules for a particular version, among with a wide set of LuCI apps,
+are automatically uploaded to GitHub and `opkg` is configured to use them. All
+of the other software is available from OpenWrt's snapshots, but the ROM is not
+configured to use them [by default].
+
+If there is some missing package or kernel module, please open a GitHub issue or
+send feedback to my e-mail or OpenWrt forum thread explaining exactly what's
+missing. It will be added to the next release.
+
+### Memory subsystem
+
+The device has only 256/512 MB of RAM. That's plenty but sometimes it might get
+a little short (i.e. when indexing a huge library with ReadyMedia). For this,
+the memory subsystem has been tuned to support almost any NAS or adblocker load:
+
+- The system will use the swap cache when possible. It's a pool of the 30.00% of
+  the system memory (when used alone), compressed using `lzo-rle`, which is one
+  of the fastest compressors available. The system will eventually evict pages
+  to a real swapping device (which also includes `zram`) when it can't compress
+  them, when they are too old or when the pool is getting depleted.
+- When `zram` comes online with the `lzo-rle` compressor (the default unless you
+  change it in LuCI, when usig `zswap` it will use `zstd` instead), it will
+  adjust the `zswap` pool, so both pools (torgether) will use the user's
+  requested space; and then the system will set this space for swapping. `zram`
+  has a slower but yet more powerful compressor.
+- If the backing file/device is setup correctly, pages that are hard to
+  compress, or that are too old in the `zram` pool will be eventually evicted to
+  the storage, freeing the memory and lowering the compressor overhead, in a
+  process called "compaction".
+
+#### What's the gain?
+There are several use cases for this:
+1. If the system is using only `zswap`, then great I/O operations will be
+  avoided, making the system work faster at the cost of a portion of the memory.
+  `zswap` will evict the never-used pages to the slow, real device over time,
+  reducing the footprint by keeping only the actually needed in memory.
+3. If the system is using only `zram`, then all of the I/O is avoided. The
+  `zram` compressor is not as fast as `zswap`, but can guarantee good savings,
+  because it can compress better as it's a block device and not a LRU cache.
+4. If the system is using both, pages that the kernel needs constantly will land
+  in `zswap` which is really fast and offers decent savings. Older and not so
+  easy to compress pages will be evicted to `zram`, where they may be compressed
+  better at the cost of more time required to do so. This way, users can benefit
+  from the fast `zswap` and from the good `zram` at the same time.
+  4.1. When using a real swap device, `zram` will be filled first and only when
+      the system cannot write more pages to it, it will begin to use the real
+      swap. The benefit: avoiding swapping at all costs. The bad side: older and
+      never-used pages will remain in memory, they cannot be sent to the swap
+      device.
+   4.2. In order to alleviate problems in 4.1, `zram` can evict pages to a
+       "backing storage" device, so when using the "triple layer" (zswap -> zram
+       -> device), the system can use the memory more efficiently than the
+       default configuration.
+
+By using compressed memory, the kernel will delay the memory starvation. This is
+because most of the memory loaded by programs is only used once, most of the
+time. If the kernel cannot reproduce the memory, for example, anonymous memory,
+it's forced to keep it, either in RAM or in swap.
+
+## Notes for this release
+
+This is a full custom configuration optimized for IPQ40xx devices. The purpose of
+this build is to give the user a sensible selection of software for testing and
+using OpenWrt without too much effort. It's also optimized for lower latency and
+fixes for many annoyances.
+
+This build contains some important changes compared to OpenWrt. It contains some
+customizations that cannot be found in the official OpenWrt image or the OpenWrt
+repositories, making both kind of incompatible. Specially because it contains
+several kernel patches.
+
+Please: perform a factory reset if you are replacing OpenWrt with this and 
+viceversa or else your device will soft brick, and you'll see yourself doing a
+recovery.
+
+## Take into consideration
+
+For saving space, install the OpenSSL version of the software if another SSL
+version is available. This is because OpenSSL and `libopenssl` are already
+installed (and compressed in the firmware image, therefore saving space).
+
+LuCI has full OpenSSL support. However, for your convenience, you can access the
+HTTP version of LuCI. This is because it's not convenient to install a random
+self-signed certificate every single time. You can use the HTTP version, restore
+your certificate and then disable the HTTP access.
+
+> Be careful if you are using a public IPv4 or IPv6. Try to keep the access to
+ your device as tidy as possible, for your security. It is totally safe to use
+ HTTP in your LAN (if you trust your clients) but do not expose it to WAN, you
+ will be leaking your `root` password that way.
+
+The default IP address is now `192.168.xx.1` and IPv6 is `fd00:192:168:xx::1`,
+the `xx` means that every supported device has a different subnet IP.
+Hostname is `Civic`, 'Convexa-B', 'Convexa-S' or `Dallas`.
+
+For LuCI Administration WebUI, go to
+ - DNS: http://192.168.xx.1/cgi-bin/luci/admin/services/unbound
+ - IPv4: http://192.168.xx.1/cgi-bin/luci/admin
+ - IPv6: http://[fd00:192:168:xx::1]/cgi-bin/luci/admin
+
+```
+Wireless password:
+ - [Hostname] -> OpenWrt on [Hostname]
+Login password:
+ - admin -> admin
+ - root -> root
+```
+> Note: [Hostname] refers to the device's default host name, you should replace
+ that placeholder accordingly. For example, the SSID for Dallas will be
+ `Dallas` and the password will be `OpenWrt on Dallas`.
+
+Dowloads
+=========
+Click the "Assets" button below and download the `.tar.zst` file. If you want to
+check the hotfixes integrity, here is the SHA256 checksum. Use the `shasum`
+command or PeaZip/7zip, if you use Windows.
+
+**You should only flash the file which contains the hostname (in lowercase) of
+your device.**
+
+```
+hotfixes.tar.gz: SHA256 [currently, no hotfixes are needed]
+```
