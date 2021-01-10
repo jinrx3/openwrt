@@ -1,0 +1,59 @@
+
+# --- --- --- ~ Start of the kernel configuration seed ~ --- --- --- #
+
+CONFIG_ATAGS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_DEFAULT_HOSTNAME="IPQ40xx"
+CONFIG_JUMP_LABEL=y
+
+# --- --- --- File system --- --- --- #
+
+CONFIG_PSTORE=y
+CONFIG_PSTORE_842_COMPRESS=n
+CONFIG_PSTORE_COMPRESS=y
+CONFIG_PSTORE_CONSOLE=y
+CONFIG_PSTORE_DEFLATE_COMPRESS=n
+CONFIG_PSTORE_LZ4HC_COMPRESS=n
+CONFIG_PSTORE_LZ4_COMPRESS=n
+CONFIG_PSTORE_LZO_COMPRESS=n
+CONFIG_PSTORE_PMSG=y
+CONFIG_PSTORE_RAM=y
+CONFIG_PSTORE_ZSTD_COMPRESS=y
+CONFIG_PSTORE_ZSTD_COMPRESS_DEFAULT=y
+CONFIG_SQUASHFS_4K_DEVBLK_SIZE=y
+
+# --- --- --- Kernel Boot Options --- --- --- #
+
+CONFIG_CMDLINE="rcutree.kthread_prio=49"
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_CMDLINE_EXTEND=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# --- --- --- CPU/Thermal/Disk Governor --- --- --- #
+
+CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=n
+CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=y
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+CONFIG_UCLAMP_TASK=y
+
+# --- --- --- SCSI --- --- --- #
+
+CONFIG_SCSI=m
+CONFIG_SCSI_MQ_DEFAULT=y
+
+# --- --- --- Crypto --- --- --- #
+
+CONFIG_CRYPTO_CHACHA20_NEON=y
+CONFIG_CRYPTO_NHPOLY1305_NEON=y
+CONFIG_CRYPTO_SHA512_ARM=y
+
+# --- --- --- Task Scheduler --- --- --- #
+
+CONFIG_ARM_CPU_TOPOLOGY=y
+CONFIG_SCHED_MC=y
+
+# --- --- --- Kernel Latency --- --- --- #
+
+CONFIG_PREEMPT=y
+CONFIG_PREEMPT_NONE=n
+CONFIG_PREEMPT_VOLUNTARY=n
