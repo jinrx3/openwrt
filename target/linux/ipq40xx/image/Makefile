@@ -477,8 +477,7 @@ define Device/ezviz_cs-w3-wd1200g-eup
 	SOC := qcom-ipq4018
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | \
 		append-metadata
-	DEVICE_PACKAGES := -kmod-ath10k-ct kmod-ath10k-ct-smallbuffers \
-		ipq-wifi-ezviz_cs-w3-wd1200g-eup
+	DEVICE_PACKAGES := ipq-wifi-ezviz_cs-w3-wd1200g-eup
 endef
 TARGET_DEVICES += ezviz_cs-w3-wd1200g-eup
 
@@ -498,7 +497,7 @@ endef
 TARGET_DEVICES += glinet_gl-ap1300
 
 define Device/glinet_gl-b1300
-	$(call Device/FitImage)
+	$(call Device/FitzImage)
 	DEVICE_VENDOR := GL.iNet
 	DEVICE_MODEL := GL-B1300
 	BOARD_NAME := gl-b1300
@@ -510,7 +509,7 @@ endef
 TARGET_DEVICES += glinet_gl-b1300
 
 define Device/glinet_gl-s1300
-	$(call Device/FitImage)
+	$(call Device/FitzImage)
 	DEVICE_VENDOR := GL.iNet
 	DEVICE_MODEL := GL-S1300
 	SOC := qcom-ipq4029
@@ -555,7 +554,7 @@ define Device/linksys_ea6350v3
 	UBINIZE_OPTS := -E 5
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-kernel | append-uImage-fakehdr filesystem | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=EA6350v3
-	DEVICE_PACKAGES := uboot-envtools
+	DEVICE_PACKAGES := uboot-envtools ipq-wifi-linksys_ea6350v3
 endef
 TARGET_DEVICES += linksys_ea6350v3
 
@@ -587,7 +586,7 @@ define Device/linksys_mr8300
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
 	IMAGE/factory.bin  := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=MR8300
-	DEVICE_PACKAGES := uboot-envtools ath10k-firmware-qca9888-ct ipq-wifi-linksys_mr8300-v0 kmod-usb-ledtrig-usbport
+	DEVICE_PACKAGES := uboot-envtools ath10k-firmware-qca9888-ct-full-htt ipq-wifi-linksys_mr8300-v0 kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += linksys_mr8300
 
