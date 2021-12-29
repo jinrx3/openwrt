@@ -115,7 +115,7 @@ Signed-off-by: Oever González <notengobattery@gmail.com>
 +			 attempts, block);
 +	else if (attempts > 0 && ret < 0)
 +		ERROR("read_data: failed after %d attempts to read block [%llx]\n",
-+			  attempts + 1);
++			  attempts + 1, block);
 +
 +	return ret;
 +}
